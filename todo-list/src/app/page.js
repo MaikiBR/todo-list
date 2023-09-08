@@ -7,18 +7,23 @@ import { db } from '@/config/firebase';
 import { collection, query, onSnapshot } from '@firebase/firestore';
 import CreateTask from './components/Modal/Create/CreateTask';
 import { Skeleton } from '@mui/material';
+import UpdateTask from './components/Modal/Update/UpdateTask';
 
 export default function Home() {
   // State to store the tasks fetched from the database
   const [tasks, setTasks] = useState([]);
 
   // Loading state
-  const [loading, setLoading] = useState((true));
+  const [loading, setLoading] = useState(true);
 
   // State to manage the 'open' status of the CreateTask dialog
   const [open, setOpen] = useState(false);
 
-  // Function to open/close the CreateTask dialog
+  // State to manage the 'open' status of the UpdateTask dialog
+  const [openU, setOpenU] = useState(false);
+  const [idForU, setIdForU] = useState('');
+
+  // Function to open the CreateTask dialog
   const handleOpenCreateTask = () => {
     setOpen(true);
   };
@@ -26,6 +31,18 @@ export default function Home() {
   // Function to close the CreateTask dialog
   const handleCloseCreateTask = () => {
     setOpen(false);
+  };
+
+  // Function to open the UpdateTask dialog
+  const handleOpenUpdateTask = (id) => {
+    setOpenU(true);
+    console.log(id);
+    setIdForU(id);
+  };
+
+  // Function to close the UpdateTask dialog
+  const handleCloseUpdateTask = () => {
+    setOpenU(false);
   };
 
   // Read tasks from database
@@ -49,6 +66,7 @@ export default function Home() {
       </div>
       <div className={styles.content}>
         <CreateTask open={open} handleCloseCreateTask={handleCloseCreateTask} />
+        <UpdateTask open={openU} handleCloseUpdateTask={handleCloseUpdateTask} id={idForU}/>
         <div className={styles.tasks}>
           {loading ? (
             <>
@@ -67,6 +85,7 @@ export default function Home() {
                 task={task.task}
                 description={task.description}
                 expDate={task.expDate.toDate().toLocaleString()}
+                handleOpenUpdateTask={handleOpenUpdateTask}
               />
             ))
           )}

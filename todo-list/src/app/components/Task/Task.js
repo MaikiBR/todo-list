@@ -6,7 +6,7 @@ import { faEdit, faEllipsisVertical, faTrash } from '@fortawesome/free-solid-svg
 import { deleteDoc, doc } from '@firebase/firestore';
 import { db } from '@/config/firebase';
 
-const Task = ({ id, task, description, expDate }) => {
+const Task = ({ id, task, description, expDate, handleOpenUpdateTask }) => {
     // State for task option menu (Edit and Delete)
     const [anchor, setAnchor] = useState(null);
 
@@ -23,6 +23,12 @@ const Task = ({ id, task, description, expDate }) => {
     // Delete task
     const handleDelete = async (id) => {
         await deleteDoc(doc(db, 'tasks', id));
+        handleClose();
+    }
+
+    // Update task
+    const handleUpdate = async (id) => {
+        await handleOpenUpdateTask(id);
         handleClose();
     }
 
@@ -55,7 +61,7 @@ const Task = ({ id, task, description, expDate }) => {
                             open={Boolean(anchor)}
                             onClose={handleClose}
                         >
-                            <MenuItem onClick={handleClose} ><FontAwesomeIcon icon={faEdit} /> Editar</MenuItem>
+                            <MenuItem onClick={() => handleUpdate(id)} ><FontAwesomeIcon icon={faEdit} /> Editar</MenuItem>
                             <MenuItem onClick={() => handleDelete(id)}><FontAwesomeIcon icon={faTrash} /> Eliminar</MenuItem>
                         </Menu>
                     </>
